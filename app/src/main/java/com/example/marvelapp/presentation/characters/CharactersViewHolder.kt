@@ -18,7 +18,7 @@ class CharactersViewHolder(
     fun bind(character: Character) {
         textName.text = character.name
         Glide.with(itemView)
-            .load(imageCharacter)
+            .load(character.imageUrl)
             .fallback(R.drawable.ic_img_loading_error)
             .into(imageCharacter)
     }
