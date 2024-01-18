@@ -8,5 +8,5 @@ data class DataContainerResponse(
     @SerializedName("total")
     val total: Int,
     @SerializedName("results")
-    val results: CharacterResponse
+    val results: List<CharacterResponse>
 )
