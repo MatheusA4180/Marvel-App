@@ -1,9 +1,8 @@
-package com.example.marvelapp.presentation.characters
+package com.example.marvelapp.presentation.characters.adapter
 
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import com.example.core.domain.model.Character
 
 
