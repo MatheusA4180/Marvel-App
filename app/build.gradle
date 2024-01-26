@@ -18,7 +18,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('C:\\Users\\clube\\StudioProjects\\Marvel-App\\store\\marvel_app_key_store.jks')
+            storeFile file("$rootDir/store/marvel_app_key_store.jks")
             storePassword 'marvel@123'
             keyPassword 'marvel@123'
             keyAlias 'marvel-app'
