@@ -15,6 +15,8 @@ import com.example.marvelapp.presentation.characters.adapter.CharactersViewHolde
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -38,6 +40,8 @@ class CharactersFragmentTest {
     private val charactersResponsePage1Mock = "characters_p1.json".asJsonString()
     private val charactersResponsePage2Mock = "characters_p2.json".asJsonString()
 
+    private val timeResponseUI = 100L
+
     private val codeError = 404
 
     @Before
@@ -54,9 +58,14 @@ class CharactersFragmentTest {
     }
 
     @Test
-    fun shouldShowCharacters_whenViewIsCreated() {
-        server.enqueue(MockResponse().setBody(charactersResponsePage1Mock))
+    fun shouldShowCharacters_whenViewIsCreated(): Unit = runBlocking {
+        // Arrange
+        server.enqueue(MockResponse().setBody("characters_p1.json".asJsonString()))
 
+        // Act
+        delay(timeResponseUI)
+
+        // Assert
         onView(
             withId(R.id.recycler_characters)
         ).check(
@@ -65,7 +74,7 @@ class CharactersFragmentTest {
     }
 
     @Test
-    fun shouldLoadMoreCharacters_whenNewPageIsRequested() {
+    fun shouldLoadMoreCharacters_whenNewPageIsRequested(): Unit = runBlocking {
         // Arrange
         with(server) {
             enqueue(MockResponse().setBody(charactersResponsePage1Mock))
@@ -73,7 +82,8 @@ class CharactersFragmentTest {
         }
         val expectedFirstResultName = "Amora"
 
-        // Action
+        // Act
+        delay(timeResponseUI)
         onView(
             withId(R.id.recycler_characters)
         ).perform(
@@ -89,10 +99,14 @@ class CharactersFragmentTest {
     }
 
     @Test
-    fun shouldShowErrorView_whenReceivesAnErrorAsPaging(){
+    fun shouldShowErrorView_whenReceivesAnErrorAsPaging(): Unit = runBlocking {
         // Arrange
         server.enqueue(MockResponse().setResponseCode(codeError))
 
+        // Act
+        delay(timeResponseUI)
+
+        // Assert
         onView(
             withId(R.id.text_initial_loading_error)
         ).check(
