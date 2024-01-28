@@ -33,7 +33,8 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.example.marvelapp.CustomTestRunner"
+
         buildConfigField("String", "PUBLIC_KEY", apikeyProperties['PUBLIC_KEY'])
         buildConfigField("String", "PRIVATE_KEY", apikeyProperties['PRIVATE_KEY'])
         buildConfigField("String", "BASE_URL", '"https://gateway.marvel.com/v1/public/"')
@@ -127,5 +128,11 @@ dependencies {
 
     // Instrumentation tests
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$expresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$expresso_version"
+    debugImplementation "androidx.fragment:fragment-testing:$fragment_testing_version"
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_testing_version"
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_testing_version"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okhttp_version"
+
 }
