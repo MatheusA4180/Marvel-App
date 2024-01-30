@@ -12,10 +12,11 @@ data class CharacterResponse(
     val thumbnail: ThumbnailResponse
 )
 
-fun CharacterResponse.toCharacterModel() : Character {
+fun CharacterResponse.toCharacterModel(): Character {
     return Character(
+        characterId = id,
         name = this.name,
         imageUrl = "${this.thumbnail.path}.${this.thumbnail.extension}"
-            .replace("http","https")
+            .replace("http", "https")
     )
 }
