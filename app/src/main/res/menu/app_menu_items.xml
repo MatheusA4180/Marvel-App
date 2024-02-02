@@ -13,10 +13,4 @@
         android:layout_height="wrap_content"
         android:icon="@drawable/ic_favorite_menu_outlined"
         android:title="@string/app_menu_favorites" />
-    <item
-        android:id="@+id/about"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:icon="@drawable/ic_info_menu_outlined"
-        android:title="@string/app_menu_about" />
 </menu>

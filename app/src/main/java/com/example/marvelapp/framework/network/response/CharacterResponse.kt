@@ -9,7 +9,9 @@ data class CharacterResponse(
     @SerializedName("name")
     val name: String,
     @SerializedName("thumbnail")
-    val thumbnail: ThumbnailResponse
+    val thumbnail: ThumbnailResponse,
+    @SerializedName("description")
+    val description: String
 )
 
 fun CharacterResponse.toCharacterModel(): Character {
@@ -17,6 +19,7 @@ fun CharacterResponse.toCharacterModel(): Character {
         characterId = id,
         name = this.name,
         imageUrl = "${this.thumbnail.path}.${this.thumbnail.extension}"
-            .replace("http", "https")
+            .replace("http", "https"),
+        description = this.description
     )
 }

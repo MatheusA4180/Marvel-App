@@ -17,6 +17,32 @@
         tools:ignore="ContentDescription"
         tools:srcCompat="@tools:sample/avatars" />
 
+    <TextView
+        android:id="@+id/title_description_character"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/details_description_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_character" />
+
+    <TextView
+        android:id="@+id/text_description_character"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/title_description_character"
+        app:layout_constraintTop_toBottomOf="@+id/title_description_character"
+        tools:text="@string/example_description_character" />
+
     <ViewFlipper
         android:id="@+id/flipper_favorite"
         android:layout_width="wrap_content"
@@ -45,9 +71,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_character">
+        app:layout_constraintTop_toBottomOf="@id/text_description_character">
 
-        <include layout="@layout/include_view_detail_loading_state" />
+        <include
+            android:id="@+id/include_detail_loading_view"
+            layout="@layout/include_view_detail_loading_state" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_parent_detail"

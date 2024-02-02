@@ -3,10 +3,14 @@
     <string name="common_no_internet_connection">No internet connection</string>
     <string name="common_no_results_found">No results found</string>
     <string name="common_try_again">Try again</string>
-    <string name="common_offline_try_again">You are offline. Check your internet connection and try again</string>
+    <string name="common_offline_try_again">
+        You are offline. Check your internet connection and try again
+    </string>
 
     <string name="error_loading_data">Error when trying to load data</string>
-    <string name="error_loading_more_try_again">Error when trying to load the next page. Try again</string>
+    <string name="error_loading_more_try_again">
+        Error when trying to load the next page. Try again
+    </string>
     <string name="error_add_favorite">Error when trying to add favorite</string>
     <string name="error_remove_favorite">Error when trying to remove favorite</string>
 
@@ -20,8 +24,16 @@
 
     <string name="characters_screen_title">Characters</string>
 
+    <string name="details_description_title">Description</string>
     <string name="details_comics_category">Comics</string>
     <string name="details_events_category">Events</string>
+    <string name="empty_description">Not found description for this character</string>
+    <string name="example_description_character">
+        Rick Jones has been Hulk\'s best bud since day one,but now he\'s more than a friend…he\'s a
+        teammate! Transformed by a Gamma energy explosion, A-Bomb\'s thick, armored skin is just as
+        strong and powerful as it is blue. And when he curls into action, he uses it like a giant bo
+        wling ball of destruction!
+    </string>
 
     <string name="favorites_screen_title">Favorites</string>
     <string name="favorites_no_favorites_in_the_list">No heroes in the favorite list</string>
@@ -34,8 +46,4 @@
     <string name="sort_order_ascending">Ascending</string>
     <string name="sort_order_descending">Descending</string>
     <string name="sort_apply">Apply</string>
-
-    <!-- About -->
-    <string name="about_screen_title">About</string>
-    <string name="about_attribution">Data provided by Marvel. © 2021 Marvel</string>
 </resources>

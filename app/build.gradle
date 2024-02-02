@@ -128,11 +128,18 @@ dependencies {
 
     // Instrumentation tests
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+
     androidTestImplementation "androidx.test.espresso:espresso-core:$expresso_version"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$expresso_version"
+
     debugImplementation "androidx.fragment:fragment-testing:$fragment_testing_version"
+
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_testing_version"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_testing_version"
+
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okhttp_version"
+
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 
 }

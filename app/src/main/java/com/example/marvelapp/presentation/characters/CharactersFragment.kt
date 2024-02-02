@@ -70,7 +70,8 @@ class CharactersFragment : Fragment() {
                     DetailViewArg(
                         characterId = character.characterId,
                         name = character.name,
-                        imageUrl = character.imageUrl
+                        imageUrl = character.imageUrl,
+                        description = character.description
                     ),
                     character.name
                 )
@@ -105,7 +106,7 @@ class CharactersFragment : Fragment() {
                     is LoadState.Error -> {
                         setShimmerVisibility(false)
                         binding.includeViewCharactersErrorState.buttonRetry.setOnClickListener {
-                            charactersAdapter.refresh()
+                            charactersAdapter.retry()
                         }
                         FLIPPER_CHILD_ERROR
                     }

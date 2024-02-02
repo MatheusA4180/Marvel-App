@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.transition.TransitionInflater
+import com.example.marvelapp.R
 import com.example.marvelapp.databinding.FragmentDetailBinding
 import com.example.marvelapp.framework.imageloader.ImageLoader
+import com.example.marvelapp.presentation.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -39,12 +41,15 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val detailViewArg = args.detailViewArg
+        //(activity as? MainActivity)?.setTitleInAppToolbar(detailViewArg.name)
         binding.imageCharacter.run {
             transitionName = detailViewArg.name
             imageLoader.load(this, detailViewArg.imageUrl)
         }
-
         setSharedElementTransitionOnEnter()
+        binding.textDescriptionCharacter.text = detailViewArg.description.ifEmpty {
+            getString(R.string.empty_description)
+        }
 
         loadCategoriesAndObserveUiState(detailViewArg)
     }

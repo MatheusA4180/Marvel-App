@@ -34,7 +34,7 @@ class GetCharacterCategoriesUseCaseImpl @Inject constructor(
             val comics = comicsDeferred.await()
             val events = eventsDeferred.await()
 
-            ResultStatus.Success(comics to events)
+            ResultStatus.Success(Pair(comics, events))
         }
     }
 }
