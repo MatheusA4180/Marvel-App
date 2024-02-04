@@ -40,6 +40,10 @@ android {
         buildConfigField("String", "BASE_URL", '"https://gateway.marvel.com/v1/public/"')
     }
 
+    testOptions {
+        animationsDisabled = true
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
