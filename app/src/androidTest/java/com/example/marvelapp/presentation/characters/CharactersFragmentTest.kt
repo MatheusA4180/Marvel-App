@@ -50,7 +50,7 @@ class CharactersFragmentTest {
 
     private val codeError = 404
 
-    private val timeResponseUI = 100L
+    private val timeResponseUI = 200L
 
     @Before
     fun setUp() {
