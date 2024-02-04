@@ -3,10 +3,9 @@ package com.example.marvelapp.framework.paging
 import androidx.paging.PagingSource
 import com.example.core.data.repository.CharactersRemoteDataSource
 import com.example.core.domain.model.Character
-import com.example.marvelapp.factory.response.DataWrapperResponseFactory
-import com.example.marvelapp.framework.network.response.DataWrapperResponse
-import com.example.marvelapp.framework.network.response.toCharacterModel
+import com.example.marvelapp.factory.response.CharacterPagingFactory
 import com.example.testing.MainCoroutineRule
+import com.example.testing.model.CharacterFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,9 +27,15 @@ class CharactersPagingSourceTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     @Mock
-    lateinit var remoteDataSource: CharactersRemoteDataSource<DataWrapperResponse>
+    lateinit var remoteDataSource: CharactersRemoteDataSource
 
-    private val dataWrapperResponseFactory = DataWrapperResponseFactory().create()
+    private val dataWrapperResponseFactory = CharacterPagingFactory()
+
+    private val characterFactory = CharacterFactory()
+    private val charactersMock = listOf(
+        characterFactory.create(CharacterFactory.Hero.ThreeDMan),
+        characterFactory.create(CharacterFactory.Hero.ABomb)
+    )
 
     private lateinit var charactersPagingSource: CharactersPagingSource
 
@@ -45,12 +50,12 @@ class CharactersPagingSourceTest {
         whenever(
             remoteDataSource.fetchCharacters(any())
         ).thenReturn(
-            dataWrapperResponseFactory
+            dataWrapperResponseFactory.create()
         )
 
         // act
         val expectedResult = PagingSource.LoadResult.Page(
-            data = dataWrapperResponseFactory.data.results.map { it.toCharacterModel() },
+            data = charactersMock,
             prevKey = null,
             nextKey = 20
         )

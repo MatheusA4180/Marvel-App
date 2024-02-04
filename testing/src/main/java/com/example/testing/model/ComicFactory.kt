@@ -6,8 +6,8 @@ class ComicFactory {
 
     fun create(comic: FakeComic) = when (comic) {
         FakeComic.FakeComic1 -> Comic(
-            2211506,
-            "http://fakecomigurl.jpg"
+            id = 2211506,
+            imageUrl = "http://fakecomigurl.jpg"
         )
     }
 

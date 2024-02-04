@@ -10,13 +10,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.example.marvelapp.databinding.FragmentCharactersBinding
+import com.example.marvelapp.framework.imageloader.ImageLoader
 import com.example.marvelapp.presentation.characters.adapter.CharactersAdapter
 import com.example.marvelapp.presentation.characters.adapter.CharactersLoadMoreStateAdapter
+import com.example.marvelapp.presentation.detail.DetailViewArg
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CharactersFragment : Fragment() {
@@ -25,6 +30,9 @@ class CharactersFragment : Fragment() {
     private val binding: FragmentCharactersBinding get() = _binding!!
     private val viewModel: CharactersViewModel by viewModels()
     private lateinit var charactersAdapter: CharactersAdapter
+
+    @Inject
+    lateinit var imageLoader: ImageLoader
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,12 +46,11 @@ class CharactersFragment : Fragment() {
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         initCharactersAdapter()
         observeInitialLoadState()
 
         lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.charactersPagingData(query = "").collect { pagingData ->
                     charactersAdapter.submitData(pagingData)
                 }
@@ -52,9 +59,26 @@ class CharactersFragment : Fragment() {
 
     }
 
-    private fun initCharactersAdapter(){
-        charactersAdapter = CharactersAdapter()
-        with(binding.recyclerCharacters){
+    private fun initCharactersAdapter() {
+        charactersAdapter = CharactersAdapter(imageLoader) { character, view ->
+            val extras = FragmentNavigatorExtras(
+                view to character.name
+            )
+
+            val directions = CharactersFragmentDirections
+                .actionCharactersFragmentToDetailFragment(
+                    DetailViewArg(
+                        characterId = character.characterId,
+                        name = character.name,
+                        imageUrl = character.imageUrl,
+                        description = character.description
+                    ),
+                    character.name
+                )
+
+            findNavController().navigate(directions, extras)
+        }
+        with(binding.recyclerCharacters) {
             scrollToPosition(0)
             setHasFixedSize(true)
             adapter = charactersAdapter.withLoadStateFooter(
@@ -65,22 +89,24 @@ class CharactersFragment : Fragment() {
         }
     }
 
-    private fun observeInitialLoadState(){
+    private fun observeInitialLoadState() {
         lifecycleScope.launch {
             charactersAdapter.loadStateFlow.collectLatest { loadState ->
-                binding.flipperCharacters.displayedChild = when (loadState.refresh){
+                binding.flipperCharacters.displayedChild = when (loadState.refresh) {
                     is LoadState.Loading -> {
                         setShimmerVisibility(true)
                         FLIPPER_CHILD_LOADING
                     }
+
                     is LoadState.NotLoading -> {
                         setShimmerVisibility(false)
                         FLIPPER_CHILD_CHARACTERS
                     }
+
                     is LoadState.Error -> {
                         setShimmerVisibility(false)
                         binding.includeViewCharactersErrorState.buttonRetry.setOnClickListener {
-                            charactersAdapter.refresh()
+                            charactersAdapter.retry()
                         }
                         FLIPPER_CHILD_ERROR
                     }
@@ -90,12 +116,12 @@ class CharactersFragment : Fragment() {
 
     }
 
-    private fun setShimmerVisibility(visibility: Boolean){
+    private fun setShimmerVisibility(visibility: Boolean) {
         binding.includeViewCharactersLoadingState.shimmerCharacters.run {
             isVisible = visibility
             if (visibility) {
                 startShimmer()
-            }else{
+            } else {
                 stopShimmer()
             }
         }
@@ -106,7 +132,7 @@ class CharactersFragment : Fragment() {
         _binding = null
     }
 
-    companion object{
+    companion object {
         private const val FLIPPER_CHILD_LOADING = 0
         private const val FLIPPER_CHILD_CHARACTERS = 1
         private const val FLIPPER_CHILD_ERROR = 2
