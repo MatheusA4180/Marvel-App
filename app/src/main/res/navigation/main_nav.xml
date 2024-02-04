@@ -7,5 +7,4 @@
 
     <include app:graph="@navigation/characters" />
     <include app:graph="@navigation/favorites" />
-    <include app:graph="@navigation/about" />
 </navigation>
