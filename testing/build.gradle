@@ -15,6 +15,6 @@ dependencies {
     // Unit tests
     api 'junit:junit:4.13.2'
     api "androidx.arch.core:core-testing:2.1.0"
-    api 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
     api "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 }

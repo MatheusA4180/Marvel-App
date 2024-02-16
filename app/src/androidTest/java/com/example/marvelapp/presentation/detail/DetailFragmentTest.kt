@@ -11,14 +11,17 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.marvelapp.R
+import com.example.marvelapp.extension.IdlingResourceUtil.registerIdlingResources
+import com.example.marvelapp.extension.IdlingResourceUtil.unregisterIdlingResources
 import com.example.marvelapp.extension.asJsonString
 import com.example.marvelapp.framework.di.BaseUrlModule
+import com.example.marvelapp.framework.di.ConfigIdlingResource
 import com.example.marvelapp.framework.di.CoroutinesModule
 import com.example.marvelapp.launchFragmentInHiltContainer
+import com.example.marvelapp.util.idlingresource.singleton.RequestDetailIdlingResource
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -29,7 +32,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-@UninstallModules(BaseUrlModule::class, CoroutinesModule::class)
+@UninstallModules(BaseUrlModule::class, CoroutinesModule::class, ConfigIdlingResource::class)
 @HiltAndroidTest
 class DetailFragmentTest {
 
@@ -63,8 +66,6 @@ class DetailFragmentTest {
 
     private val codeError = 404
 
-    private val timeResponseUI = 200L
-
     @Before
     fun setUp() {
         server = MockWebServer().apply {
@@ -84,6 +85,7 @@ class DetailFragmentTest {
 
     @Test
     fun shouldShowDefaultDescriptionText_whenFragmentReceiveEmptyArg(): Unit = runBlocking {
+        // Assert
         onView(
             withId(R.id.text_description_character)
         ).check(
@@ -93,6 +95,7 @@ class DetailFragmentTest {
 
     @Test
     fun shouldShowLoadingInListComicsAndEvents_whenViewIsCreated(): Unit = runBlocking {
+        // Assert
         onView(
             withId(R.id.include_detail_loading_view)
         ).check(
@@ -103,93 +106,83 @@ class DetailFragmentTest {
     @Test
     fun shouldShowComicsAndEvents_whenReceiveSuccessResponseFromApi(): Unit = runBlocking {
         // Arrange
+        registerIdlingResources(RequestDetailIdlingResource.countingIdlingResource)
         server.run {
             enqueue(MockResponse().setBody(comicResponseMock))
             enqueue(MockResponse().setBody(eventResponseMock))
         }
-
-        // Act
-        delay(timeResponseUI)
-
         // Assert
         onView(
             withId(R.id.recycler_parent_detail)
         ).check(
             matches(isDisplayed())
         )
+        unregisterIdlingResources(RequestDetailIdlingResource.countingIdlingResource)
     }
 
     @Test
     fun shouldShowComicsList_whenReceiveJustComicsFromApi(): Unit = runBlocking {
         // Arrange
+        registerIdlingResources(RequestDetailIdlingResource.countingIdlingResource)
         server.run {
             enqueue(MockResponse().setBody(comicResponseMock))
             enqueue(MockResponse().setBody(eventEmptyResponseMock))
         }
-
-        // Act
-        delay(timeResponseUI)
-
         // Assert
         onView(
             withId(R.id.recycler_parent_detail)
         ).check(
             matches(hasChildCount(1))
         )
+        unregisterIdlingResources(RequestDetailIdlingResource.countingIdlingResource)
     }
 
     @Test
     fun shouldShowEventsList_whenReceiveJustEventsFromApi(): Unit = runBlocking {
         // Arrange
+        registerIdlingResources(RequestDetailIdlingResource.countingIdlingResource)
         server.run {
             enqueue(MockResponse().setBody(comicEmptyResponseMock))
             enqueue(MockResponse().setBody(eventResponseMock))
         }
-
-        // Act
-        delay(timeResponseUI)
-
         // Assert
         onView(
             withId(R.id.recycler_parent_detail)
         ).check(
             matches(hasChildCount(1))
         )
+        unregisterIdlingResources(RequestDetailIdlingResource.countingIdlingResource)
     }
 
     @Test
     fun shouldShowDefaultTextNoResults_whenReceivesEmptyResponseFromApi(): Unit = runBlocking {
         // Arrange
+        registerIdlingResources(RequestDetailIdlingResource.countingIdlingResource)
         server.run {
             enqueue(MockResponse().setBody(comicEmptyResponseMock))
             enqueue(MockResponse().setBody(eventEmptyResponseMock))
         }
-
-        // Act
-        delay(timeResponseUI)
-
         // Assert
         onView(
             withId(R.id.text_no_results)
         ).check(
             matches(isDisplayed())
         )
+        unregisterIdlingResources(RequestDetailIdlingResource.countingIdlingResource)
     }
 
     @Test
     fun shouldShowErrorView_whenReceivesAnErrorFromApi(): Unit = runBlocking {
         // Arrange
+        registerIdlingResources(RequestDetailIdlingResource.countingIdlingResource)
         server.enqueue(MockResponse().setResponseCode(codeError))
-
-        // Act
-        delay(timeResponseUI)
-
         // Assert
         onView(
             withId(R.id.include_error_view)
         ).check(
             matches(isDisplayed())
         )
+        unregisterIdlingResources(RequestDetailIdlingResource.countingIdlingResource)
     }
 
 }

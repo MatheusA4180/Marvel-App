@@ -15,6 +15,7 @@
     <color name="black_900">#212121</color>
     <color name="black_800">#484848</color>
     <color name="medium_grey">#D1D1D1</color>
+    <color name="light_grey">#E9E9E9</color>
     <color name="checked_chip">#20C62828</color>
     <color name="unchecked_chip">@color/medium_grey</color>
     <color name="checked_chip_text">@color/red_800</color>
