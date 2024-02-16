@@ -13,4 +13,5 @@ interface CoroutinesModule {
 
     @Binds
     fun bindDispatchers(dispatchers: AppCoroutinesDispatchers): CoroutinesDispatchers
+
 }

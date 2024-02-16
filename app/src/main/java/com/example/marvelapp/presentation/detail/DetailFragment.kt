@@ -11,7 +11,11 @@ import androidx.transition.TransitionInflater
 import com.example.marvelapp.R
 import com.example.marvelapp.databinding.FragmentDetailBinding
 import com.example.marvelapp.framework.imageloader.ImageLoader
-import com.example.marvelapp.presentation.MainActivity
+import com.example.marvelapp.presentation.detail.adapter.DetailParentAdapter
+import com.example.marvelapp.presentation.detail.viewmodel.DetailViewModel
+import com.example.marvelapp.presentation.detail.viewmodel.FavoriteUiActionStateLiveData
+import com.example.marvelapp.presentation.detail.viewmodel.UiActionStateLiveData
+import com.example.marvelapp.presentation.extensions.showShortToast
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -41,7 +45,6 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val detailViewArg = args.detailViewArg
-        //(activity as? MainActivity)?.setTitleInAppToolbar(detailViewArg.name)
         binding.imageCharacter.run {
             transitionName = detailViewArg.name
             imageLoader.load(this, detailViewArg.imageUrl)
@@ -52,6 +55,7 @@ class DetailFragment : Fragment() {
         }
 
         loadCategoriesAndObserveUiState(detailViewArg)
+        setAndObserveFavoriteUiState(detailViewArg)
     }
 
     private fun loadCategoriesAndObserveUiState(detailViewArg: DetailViewArg) {
@@ -64,7 +68,6 @@ class DetailFragment : Fragment() {
                         setHasFixedSize(true)
                         adapter = DetailParentAdapter(uiState.detailParentList, imageLoader)
                     }
-
                     FLIPPER_CHILD_POSITION_DETAIL
                 }
 
@@ -80,7 +83,34 @@ class DetailFragment : Fragment() {
         }
     }
 
-    // Define a animação da transição como "move"
+    private fun setAndObserveFavoriteUiState(detailViewArg: DetailViewArg) {
+        viewModel.favorite.run {
+            checkFavorite(detailViewArg.characterId)
+
+            binding.imageFavoriteIcon.setOnClickListener {
+                update(detailViewArg)
+            }
+
+            state.observe(viewLifecycleOwner) { uiState ->
+                binding.flipperFavorite.displayedChild = when (uiState) {
+                    FavoriteUiActionStateLiveData.UiState.Loading -> {
+                        FLIPPER_FAVORITE_CHILD_POSITION_LOADING
+                    }
+
+                    is FavoriteUiActionStateLiveData.UiState.Icon -> {
+                        binding.imageFavoriteIcon.setImageResource(uiState.icon)
+                        FLIPPER_FAVORITE_CHILD_POSITION_IMAGE
+                    }
+
+                    is FavoriteUiActionStateLiveData.UiState.Error -> {
+                        showShortToast(uiState.messageResId)
+                        FLIPPER_FAVORITE_CHILD_POSITION_IMAGE
+                    }
+                }
+            }
+        }
+    }
+
     private fun setSharedElementTransitionOnEnter() {
         TransitionInflater.from(requireContext())
             .inflateTransition(android.R.transition.move).apply {
@@ -98,5 +128,7 @@ class DetailFragment : Fragment() {
         private const val FLIPPER_CHILD_POSITION_DETAIL = 1
         private const val FLIPPER_CHILD_POSITION_ERROR = 2
         private const val FLIPPER_CHILD_POSITION_EMPTY = 3
+        private const val FLIPPER_FAVORITE_CHILD_POSITION_IMAGE = 0
+        private const val FLIPPER_FAVORITE_CHILD_POSITION_LOADING = 1
     }
 }

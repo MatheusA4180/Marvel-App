@@ -15,8 +15,8 @@ buildscript {
     ext.coroutines_version = '1.6.4'
     ext.google_services_version = '4.3.10'
     ext.firebase_bom_version = "29.0.1"
-    ext.fragment_testing_version = "1.4.0"
-    ext.hilt_testing_version = "2.39.1"
+    ext.fragment_testing_version = "1.5.3"
+    ext.hilt_testing_version = "2.43.2"
     ext.expresso_version = "3.4.0"
     repositories {
         google()

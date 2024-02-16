@@ -37,6 +37,7 @@
 
     <string name="favorites_screen_title">Favorites</string>
     <string name="favorites_no_favorites_in_the_list">No heroes in the favorite list</string>
+    <string name="search_hint">Search for character</string>
 
     <!-- Ordering -->
     <string name="sort_order_by">Order by</string>

@@ -1,4 +1,4 @@
-package com.example.marvelapp.presentation.detail
+package com.example.marvelapp.presentation.detail.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.marvelapp.databinding.ItemChildDetailBinding
 import com.example.marvelapp.framework.imageloader.ImageLoader
+import com.example.marvelapp.presentation.detail.DetailChildVE
 
 class DetailChildAdapter(
     private val detailChildList: List<DetailChildVE>,

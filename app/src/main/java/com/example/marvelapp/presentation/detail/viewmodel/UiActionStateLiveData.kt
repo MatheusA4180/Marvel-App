@@ -1,4 +1,4 @@
-package com.example.marvelapp.presentation.detail
+package com.example.marvelapp.presentation.detail.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,12 +6,16 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import com.example.core.usecase.GetCharacterCategoriesUseCase
 import com.example.marvelapp.R
+import com.example.marvelapp.presentation.detail.DetailChildVE
+import com.example.marvelapp.presentation.detail.DetailParentVE
 import com.example.marvelapp.presentation.extensions.watchStatus
+import com.example.marvelapp.util.idlingresource.singleton.RequestDetailIdlingResource
 import kotlin.coroutines.CoroutineContext
 
 class UiActionStateLiveData(
     private val getCharacterCategoriesUseCase: GetCharacterCategoriesUseCase,
-    private val coroutineContext: CoroutineContext
+    private val coroutineContext: CoroutineContext,
+    private val requestDetailIdlingResource: RequestDetailIdlingResource?
 ) {
 
     private val action = MutableLiveData<Action>()
@@ -19,6 +23,7 @@ class UiActionStateLiveData(
         liveData(coroutineContext) {
             when (it) {
                 is Action.Load -> {
+                    requestDetailIdlingResource?.increment()
                     getCharacterCategoriesUseCase.invoke(
                         GetCharacterCategoriesUseCase.GetCategoriesParams(it.characterId)
                     ).watchStatus(
@@ -58,6 +63,7 @@ class UiActionStateLiveData(
                             emit(UiState.Error)
                         }
                     )
+                    requestDetailIdlingResource?.decrement()
                 }
             }
         }
