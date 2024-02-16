@@ -10,19 +10,23 @@ apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'kotlin-parcelize'
 apply from: '../config/detekt/detekt.gradle'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 def apikeyPropertiesFile = rootProject.file("apikey.properties")
 def apikeyProperties = new Properties()
 apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     signingConfigs {
         release {
-            storeFile file("$rootDir/store/marvel_app_key_store.jks")
-            storePassword 'marvel@123'
-            keyPassword 'marvel@123'
-            keyAlias 'marvel-app'
+            storeFile file(keystoreProperties["storeFile"])
+            storePassword keystoreProperties["storePassword"]
+            keyPassword keystoreProperties["keyAlias"]
+            keyAlias keystoreProperties["keyPassword"]
         }
     }
 
@@ -33,6 +37,7 @@ android {
         versionCode 1
         versionName "1.0"
 
+        testInstrumentationRunnerArguments clearPackageData: 'true'
         testInstrumentationRunner "com.example.marvelapp.CustomTestRunner"
 
         buildConfigField("String", "PUBLIC_KEY", apikeyProperties['PUBLIC_KEY'])
@@ -40,7 +45,9 @@ android {
         buildConfigField("String", "BASE_URL", '"https://gateway.marvel.com/v1/public/"')
     }
 
+
     testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
         animationsDisabled = true
     }
 
@@ -109,6 +116,7 @@ dependencies {
     // Room
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-paging:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
     // Paging3
@@ -135,6 +143,7 @@ dependencies {
 
     androidTestImplementation "androidx.test.espresso:espresso-core:$expresso_version"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$expresso_version"
+    implementation "androidx.test.espresso:espresso-idling-resource:$expresso_version"
 
     debugImplementation "androidx.fragment:fragment-testing:$fragment_testing_version"
 
@@ -145,5 +154,8 @@ dependencies {
 
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestUtil 'androidx.test:orchestrator:1.4.1'
 
 }

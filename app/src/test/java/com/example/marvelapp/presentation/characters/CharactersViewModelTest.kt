@@ -1,13 +1,16 @@
 package com.example.marvelapp.presentation.characters
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import androidx.paging.PagingData
 import com.example.core.usecase.GetCharactersUseCase
 import com.example.testing.MainCoroutineRule
 import com.example.testing.model.CharacterFactory
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.isA
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
@@ -23,10 +26,16 @@ import org.mockito.junit.MockitoJUnitRunner
 class CharactersViewModelTest {
 
     @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
     @Mock
     lateinit var getCharactersUseCase: GetCharactersUseCase
+
+    @Mock
+    lateinit var uiStateObserver: Observer<CharactersViewModel.UiState>
 
     private lateinit var charactersViewModel: CharactersViewModel
 
@@ -41,7 +50,14 @@ class CharactersViewModelTest {
 
     @Before
     fun setUp() {
-        charactersViewModel = CharactersViewModel(getCharactersUseCase)
+        charactersViewModel = CharactersViewModel(
+            getCharactersUseCase,
+            mainCoroutineRule.testDispatcherProvider,
+            flipperCharactersIdlingResource = null,
+            requestCharactersIdlingResource = null
+        ).apply {
+            state.observeForever(uiStateObserver)
+        }
     }
 
     @Test
@@ -55,12 +71,10 @@ class CharactersViewModelTest {
                     pagingDataCharacters
                 )
             )
-
             // act
-            val result = charactersViewModel.charactersPagingData("")
-
-            // assert
-            assertNotNull(result.first())
+            charactersViewModel.searchCharacters()
+            // Assert
+            verify(uiStateObserver).onChanged(isA<CharactersViewModel.UiState.SearchResult>())
         }
 
     @Test
@@ -71,8 +85,8 @@ class CharactersViewModelTest {
 
             try {
                 // act
-                charactersViewModel.charactersPagingData("")
-            } catch (e: Exception){
+                charactersViewModel.searchCharacters()
+            } catch (e: Exception) {
                 // assert
                 assertTrue(e::class.java == RuntimeException::class.java)
             }
