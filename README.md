@@ -7,7 +7,7 @@ Esse repositório contém um projeto mobile desenvolvido durante o CAMP - Curso 
 ## Recursos utilizados
 
 - Arquitetura MVVM, MVI e Clean Architecture
-- Bibliotecas do Android Jetpack: Navigation, Retrofit, Room, Paging3 e DataStore
+- Bibliotecas do Android Jetpack: Navigation, Retrofit, OkHttp3, Room, Paging3 e DataStore
 - Injeção de dependência com Dagger Hilt
 - Processamento paralelo com Coroutines
 - Tratamento de fluxo de dados com LiveData e Flow 
